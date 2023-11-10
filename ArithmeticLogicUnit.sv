@@ -13,31 +13,25 @@ module ArithmeticLogicUnit (i_op, i_arg_A, i_ar_B);
 
     	logic [N:0] result;
     	logic [3:0] status;
+	
 
-    always_ff @(posedge i_clk or posedge i_reset) begin
-        if (i_reset)
-            result <= 0;
-        else begin
-            case (i_op)
-                2'b00: result <= i_arg_A - (2 * i_arg_B);
-                2'b01: result <= (i_arg_A < i_arg_B) ? N'bx : 0;
-                2'b10: result <= (i_arg_B >= N) ? N'bx : (i_arg_A + i_arg_B);
-                2'b11: begin
-                            if (i_arg_B[0] || (i_arg_B >= N) || (i_arg_B < 0))
-                                status <= 4'b1000; // Error
-                            else
-                                result <= i_arg_A + i_arg_B;
-                        end
-            endcase
-        end
-    end
-
-    always_comb begin
-        status[0] = (status == 4'b1000) ? 1'b1 : 1'b0; // ERROR bit
-        status[1] = (result % 2 == 0) ? 1'b1 : 1'b0; // EVEN1 bit
-        status[2] = (&result) ? 1'b1 : 1'b0; // ONES bit
-        status[3] = (result[N-1] && (result >> (N-1))) ? 1'b1 : 1'b0; // OVERFLOW bit
-    end
+    	always_comb 
+    	begin
+    	
+    		case (i_op)
+    			3'b000: // A-2*B
+    				result = i_arg - (2 * i_arg_B);
+    				status = 4'b0000; //Reset
+    				
+    				if (i_arg_A < i_arg_B)
+    					status[0] = 1;
+    				
+    				if ((i_arg_A + i_arg_B)[$unsigned(i_arg_B)] == 0)
+                    			status[1] = 1; 
+                    			
+                    	default:
+		endcase
+    	end
 
     assign o_result = result;
     assign o_status = status;
