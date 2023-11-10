@@ -1,15 +1,18 @@
-module ArithmeticLogicUnit #(parameter N=8, M=4)(
-    input logic [1:0] i_op,
-    input logic [N-1:0] i_arg_A,
-    input logic [N-1:0] i_arg_B,
-    input logic i_clk,
-    input logic i_reset,
-    output logic [N-1:0] o_result,
-    output logic [3:0] o_status
-);
+module ArithmeticLogicUnit (i_op, i_arg_A, i_ar_B);
 
-    logic [N-1:0] result;
-    logic [3:0] status;
+	parameter N = 8;
+	parameter M = 4;
+
+    	input logic [N:0] i_op;
+    	input logic [M:0] i_arg_A;
+    	input logic [M:0] i_arg_B;
+    	input logic i_clk;
+    	input logic i_reset;
+    	output logic [N:0] o_result;
+    	output logic [3:0] o_statu;
+
+    	logic [N:0] result;
+    	logic [3:0] status;
 
     always_ff @(posedge i_clk or posedge i_reset) begin
         if (i_reset)
