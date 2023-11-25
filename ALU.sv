@@ -1,6 +1,6 @@
 `include "alu_defines.vh"
 
-module ArithmeticLogicUnit (i_op, i_arg_A, i_ar_B);
+module ALU (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_status);
 
 	parameter N = 2;
 	parameter M = 8;
@@ -12,48 +12,34 @@ module ArithmeticLogicUnit (i_op, i_arg_A, i_ar_B);
     	input logic i_reset;
     	output logic [M-1:0] o_result;
     	output logic [3:0] o_status;
-
-    	logic [N:0] result;
-    	logic [3:0] status;
 	
 
     	always @(posedge i_clk) begin
-    	begin
     	
-    	
+    		o_status = 4'b0000; 
+    		
     		case (i_op)
     			
     			
-    			`ALU_SUB    : // A-2*B
-    			
-    				result = i_arg - (2 * i_arg_B);
-    				status = 4'b0000; 
+    			`ALU_SUB : // A-2*B
     				
-    				if (i_arg_A < i_arg_B)
-    					status[0] = 1;
+    					o_result = i_arg_A - (2 * i_arg_B);
     				
-    				if ((i_arg_A + i_arg_B)[$unsigned(i_arg_B)] == 0)
-                    			status[1] = 1;
-                    			
                     	//`ALU_LESS   : // A < B
 				
-				
+				//if (i_arg_A < i_arg_B) begin
+    				//	o_status[0] = 1;
+    				//end
+    				//if ((i_arg_A + i_arg_B)[$unsigned(i_arg_B)] == 0) begin
+                    		//	o_status[1] = 1;
+                    		//end
 				                    	
-                    	//`ALU_INDB   : // (A+B)[B] = 0
-                    		
-				                    		
+                    	//`ALU_INDB   : // (A+B)[B] = 0	
                     			
                     	//`ALU_CHANGE : // U2(A) => ZM(A)
-
-
-			
 			                    			
                     	//default:
 		endcase
     	end
-
-    assign o_result = result;
-    assign o_status = status;
-
 endmodule
 
