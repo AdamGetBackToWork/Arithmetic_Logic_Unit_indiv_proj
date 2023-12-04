@@ -20,7 +20,7 @@ module testbench;
     //wire [test_M-1:0] synthesis_test_result;
     //wire [3:0] synthesis_test_status;
     
-    sync_arith_unit_4 #(.N(s_N), .M(s_M), .K(s_K))
+    sync_arith_unit_4 #(.N(test_N), .M(test_M))
     alu_model_simulation
     					(.i_arg_A(test_arg_A),
     					 .i_arg_B(test_arg_B),
@@ -44,7 +44,7 @@ module testbench;
 	
 	initial begin
 		
-		$dumpfile("signals.vcd);
+		$dumpfile("signals.vcd");
 		$dumpvars(0, testbench);
 		
 		/*---------FIRST OPERATION TEST---------*/
@@ -61,7 +61,7 @@ module testbench;
 		test_arg_A = 4'b0011;
 		test_arg_B = 4'b0101;
 		#1
-        s_clk = 1;
+        test_clk = 1;
         #1
 
 		/* A = 7, B = 5 */
@@ -69,7 +69,7 @@ module testbench;
 		test_arg_A = 4'b0111;
 		test_arg_B = 4'b0101;
 		#1
-        s_clk = 1;
+        test_clk = 1;
         #1
         
         /* A = -4, B = 5 */
@@ -77,7 +77,7 @@ module testbench;
 		test_arg_A = 4'b1100;
 		test_arg_B = 4'b0011;
 		#1
-        s_clk = 1;
+        test_clk = 1;
         #1
         
         /* A = -4, B = -3 */
@@ -85,7 +85,7 @@ module testbench;
 		test_arg_A = 4'b1100;
 		test_arg_B = 4'b1101;
 		#1
-        s_clk = 1;
+        test_clk = 1;
         #1
         
         /* A = 4, B = -5 */
@@ -93,7 +93,7 @@ module testbench;
 		test_arg_A = 4'b0100;
 		test_arg_B = 4'b1011;
 		#1
-        s_clk = 1;
+        test_clk = 1;
         #1
 
 		/*---------THIRD OPERATION TEST---------*/
@@ -106,31 +106,31 @@ module testbench;
 		test_op = 2'b11;
 		
 		/* A = -5*/
-		s_clk = 0;
-        s_arg_A = 4'b1011;
+		test_clk = 0;
+        test_arg_A = 4'b1011;
         #1
-        s_clk = 1;
+        test_clk = 1;
         #1
 
 		/* A = 0 */
-        s_clk = 0;
-        s_arg_A = 4'b0000;
+		test_clk = 0;
+        test_arg_A = 4'b0000;
         #1
-        s_clk = 1;
+        test_clk = 1;
         #1
 
 		/* A = -7 */
-		s_clk = 0;
-        s_arg_A = 4'b1001;
+		test_clk = 0;
+        test_arg_A = 4'b1001;
         #1
-        s_clk = 1;
+        test_clk = 1;
         #1
 
 		/* A = 3 */
-        s_clk = 0;
-        s_arg_A = 4'b0011;
+        test_clk = 0;
+        test_arg_A = 4'b0011;
         #1
-        s_clk = 1;
+        test_clk = 1;
         #1
 
 
