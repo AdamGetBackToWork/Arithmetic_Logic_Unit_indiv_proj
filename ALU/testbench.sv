@@ -96,6 +96,15 @@ module testbench;
         test_clk = 1;
         #1   
         /* expected output: 0 */
+        
+        /* A = -4, B = 2 */
+		test_clk = 0;
+		test_arg_A = 4'b1100;
+		test_arg_B = 4'b0010;
+		#1
+        test_clk = 1;
+        #1   
+        /* expected output: 0 */
             		
 		/*---------SECOND OPERATION TEST---------*/
 		

@@ -24,6 +24,9 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
 	logic [M-1:0] sum;
 	logic signed sign_A;
 	logic signed sign_B;
+	logic signed sign_A2;
+	logic signed sign_B2;
+	
 	
 	/* Positive edge changes */
 	
@@ -47,6 +50,7 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
     					temp_B = (i_arg_B << 1);
     					
     					o_result = i_arg_A - temp_B;
+    					
     					/*
     					if (i_arg_A >= temp_B) begin       										
     						carry = 0;   	   											
@@ -135,10 +139,17 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
             	/* (A+B)[B] = 0 */
             			
         			
-        			//`ALU_SUM begin
+        			`ALU_SUM : begin
+        				
+        				sign_A2 = $signed(i_arg_A);
+        				sign_B2 = $signed(i_arg_B);
+        				
+        				o_result = sign_A2 + sign_B2;
+        				o_result[i_arg_B] = 0;
+        				
+        				
         			
-        			
-                    //end
+                    end
                     	
                     	
                	/*------------FOURTH OPERATION------------*/		
