@@ -1,0 +1,128 @@
+$date
+	Mon Dec  4 10:04:08 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module testbench $end
+$var wire 4 ! simulation_test_status [3:0] $end
+$var wire 4 " simulation_test_result [3:0] $end
+$var reg 4 # test_arg_A [3:0] $end
+$var reg 4 $ test_arg_B [3:0] $end
+$var reg 1 % test_clk $end
+$var reg 2 & test_op [1:0] $end
+$var reg 1 ' test_reset $end
+$scope module alu_model_simulation $end
+$var wire 4 ( i_arg_A [3:0] $end
+$var wire 4 ) i_arg_B [3:0] $end
+$var wire 1 % i_clk $end
+$var wire 2 * i_op [1:0] $end
+$var wire 1 ' i_reset $end
+$var reg 4 + comp_A [3:0] $end
+$var reg 4 , comp_B [3:0] $end
+$var reg 4 - o_result [3:0] $end
+$var reg 4 . o_status [3:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx .
+bx -
+bx ,
+bx +
+b1 *
+b101 )
+b11 (
+1'
+b1 &
+0%
+b101 $
+b11 #
+bx "
+bx !
+$end
+#1
+b1 "
+b1 -
+b0 !
+b0 .
+1%
+#2
+b100 $
+b100 )
+b111 #
+b111 (
+0%
+#3
+b0 "
+b0 -
+1%
+#4
+b11 $
+b11 )
+b1100 #
+b1100 (
+0%
+#5
+b1 "
+b1 -
+1%
+#6
+b1101 $
+b1101 )
+b1101 #
+b1101 (
+0%
+#7
+b0 "
+b0 -
+1%
+#8
+b1011 $
+b1011 )
+b100 #
+b100 (
+0%
+#9
+b1 "
+b1 -
+1%
+#10
+b1011 #
+b1011 (
+0%
+b11 &
+b11 *
+#11
+b1101 "
+b1101 -
+1%
+#12
+b0 #
+b0 (
+0%
+#13
+b0 "
+b0 -
+1%
+#14
+b1001 #
+b1001 (
+0%
+#15
+b1111 "
+b1111 -
+1%
+#16
+b11 #
+b11 (
+0%
+#17
+b11 "
+b11 -
+1%
+#18

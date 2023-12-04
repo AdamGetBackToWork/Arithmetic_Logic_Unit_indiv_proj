@@ -17,7 +17,9 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
 	output logic [M-1:0] o_result;
 	output logic [3:0] o_status;
 	
-	logic [M-1] temp_B;
+	logic [M-1:0] temp_B;
+	logic [M-1:0] comp_A;
+	logic [M-1:0] comp_B;
 	logic carry;
 	
 	/* Positive edge changes */
@@ -56,8 +58,6 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
  							
  						end   					
     					
-    					o_result = i_arg_A - (2 * i_arg_B);
-    					
     				   end
     			*/			
             		
@@ -70,8 +70,9 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
             		`ALU_COMP: begin
                     	 
                     	/* if A is smaller than B then the output is NOT 0 */ 
+                    	/* ZAMIENIC WARUNKI POROWNYWANIA ZAMIAST i_A < i_B TO DAC ZE PRZYROWNUJEMY ZNAK A DOPIERO POTEM SPRAWDZAMY CZY LICZBY SA WIEKSZE/ JESLI ICH ZNAK JEST TAKI SAM, AKA PIERWSZY BIT = 0  */
                     	
-                		if (i_arg_A < i_arg_B) begin
+                		if ((i_arg_A < i_arg_B) || ((i_arg_A[M-1] == 1) && (i_arg_B[M-1] == 0))) begin
                 		
                     			o_result = 2'b01; 
                     			
@@ -79,11 +80,32 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
                 		
                 		/* if A is bigger than B then the output is 0 */ 
                 		
-                		else begin
+                		else if ((i_arg_A > i_arg_B) || ((i_arg_A[M-1] == 0) && (i_arg_B[M-1] == 1)) || (i_arg_A == i_arg_B)) begin
                 		
                     			o_result = 0; // Output 0 if A >= B
                     			
                 		end
+                		
+                		else if ((i_arg_A[M-1] == 1) && (i_arg_B[M-1] == 1)) begin
+                			comp_A = i_arg_A;
+                			comp_B = i_arg_B;
+                			
+                			comp_A[M-1] = 0;
+                			comp_B[M-1] = 0;
+                			
+                			if (comp_A > comp_B) begin
+                			
+                				o_result = 1;
+                			
+                			end 
+                			else begin
+                			
+                				o_result = 0;
+                			
+                			end
+                		
+                		end
+
             		end 
             	
             	
