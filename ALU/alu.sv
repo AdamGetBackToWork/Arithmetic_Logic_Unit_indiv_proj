@@ -21,6 +21,9 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
 	logic [M-1:0] comp_A;
 	logic [M-1:0] comp_B;
 	logic carry;
+	logic [M-1:0] sum;
+	logic signed sign_A;
+	logic signed sign_B;
 	
 	/* Positive edge changes */
 	
@@ -35,31 +38,36 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
     		case (i_op)
     			
     			/*------------FIRST OPERATION------------*/
-    			/*
+    			
     			`ALU_SUB:  begin // A-2*B
     					
+    					sign_A = $signed(i_arg_A);
+    					sign_B = $signed(i_arg_B);
     					
+    					temp_B = (i_arg_B << 1);
     					
-    					temp_B = (i_arg_B << 1)
-    					
-    					
-    					if (i_arg_A => temp_B) begin    					
-    						carry = 0;   						
+    					o_result = i_arg_A - temp_B;
+    					/*
+    					if (i_arg_A >= temp_B) begin       										
+    						carry = 0;   	   											
     					end 
-    					
-    					else begin   					
-    						carry = 1;   					
+    					else begin   	    									
+    						carry = 1;      											
     					end
     					
     					if (carry == 0) begin
     						
+    						o_result = i_arg_A - temp_B;
+    						
     					end
  						else begin
+ 						
+ 							o_result = 0;
  							
  						end   					
-    					
+    					*/
     				   end
-    			*/			
+    						
             		
             		
             			
@@ -70,9 +78,8 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
             		`ALU_COMP: begin
                     	 
                     	/* if A is smaller than B then the output is NOT 0 */ 
-                    	/* ZAMIENIC WARUNKI POROWNYWANIA ZAMIAST i_A < i_B TO DAC ZE PRZYROWNUJEMY ZNAK A DOPIERO POTEM SPRAWDZAMY CZY LICZBY SA WIEKSZE/ JESLI ICH ZNAK JEST TAKI SAM, AKA PIERWSZY BIT = 0  */
                     	
-                		if ((i_arg_A < i_arg_B) || ((i_arg_A[M-1] == 1) && (i_arg_B[M-1] == 0))) begin
+                		if ((i_arg_A[M-1] == 1) && (i_arg_B[M-1] == 0)) begin
                 		
                     			o_result = 2'b01; 
                     			
@@ -80,12 +87,25 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
                 		
                 		/* if A is bigger than B then the output is 0 */ 
                 		
-                		else if ((i_arg_A > i_arg_B) || ((i_arg_A[M-1] == 0) && (i_arg_B[M-1] == 1)) || (i_arg_A == i_arg_B)) begin
+                		else if (((i_arg_A[M-1] == 0) && (i_arg_B[M-1] == 1)) || (i_arg_A == i_arg_B)) begin
                 		
                     			o_result = 0; // Output 0 if A >= B
                     			
                 		end
+                		else if ((i_arg_A[M-1] == 0) && (i_arg_B[M-1] == 0)) begin
                 		
+                			if (i_arg_A < i_arg_B) begin
+                			
+                				o_result = 2'b01; 
+                				
+                			end
+                			else begin 
+                			
+                				o_result = 0;
+                				
+                			end
+                			
+                		end
                 		else if ((i_arg_A[M-1] == 1) && (i_arg_B[M-1] == 1)) begin
                 			comp_A = i_arg_A;
                 			comp_B = i_arg_B;
@@ -112,11 +132,13 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
             	
             	/*------------THIRD OPERATION------------*/ 
             	
-            	/*  */
+            	/* (A+B)[B] = 0 */
             			
         			
-        			//`ALU_SUM   : // (A+B)[B] = 0	
-                    	
+        			//`ALU_SUM begin
+        			
+        			
+                    //end
                     	
                     	
                	/*------------FOURTH OPERATION------------*/		
