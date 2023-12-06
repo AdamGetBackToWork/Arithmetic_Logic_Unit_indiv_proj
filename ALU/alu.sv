@@ -38,6 +38,8 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
     		/* starting the switch case for all operation options */
     		
     		case (i_op)
+    		
+    		
     			
     			/*------------FIRST OPERATION------------*/
     			
@@ -49,6 +51,7 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
     					
     					end
             		
+            			
             			
             	/*------------SECOND OPERATION------------*/
             			
@@ -112,24 +115,39 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
             	/*------------THIRD OPERATION------------*/ 
             	
             	/* (A+B)[B] = 0 */
-            			
+   
         			
         			`ALU_SUM : begin
-        				
-        				sign_A2 = $signed(i_arg_A);
-        				sign_B2 = $signed(i_arg_B);
-        				
-        				o_result = sign_A2 + sign_B2;
-        				o_result = o_result & ~(1 << i_arg_B);
+
+        			 	/* Adding up both input vectors, A and B */
+        			 	
+        				sum = i_arg_A + i_arg_B;
         				
         				
-        			
+        				/*  
+        					Changing the corresponded to B value bit in sum to 0 
+        					keep in mind the bits are 0 indexed, so if B = 0001 then 
+        					in "sum" the bit changed will be the 2^1 one.
+        				*/
+        				 
+        				sum[i_arg_B] = 0;
+        				
+        				/* Assigning the sum to the result output */
+        				
+        				o_result = sum;
+        				
                     end
+                    	
+                    	
                     	
                     	
                	/*------------FOURTH OPERATION------------*/		
                		
-                	/* Fourth operation, conversion from Two's compliment into sign magnitude (U2 into ZM)*/
+                	/*  
+                		Fourth operation, conversion from Two's compliment into sign 
+                		magnitude (U2 into ZM)
+                	*/
+                    			
                     			
                		`ALU_CONV: begin
     				
@@ -150,6 +168,8 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
     					end
     					
 					end
+    			
+    			
     			
                     //default:
                     

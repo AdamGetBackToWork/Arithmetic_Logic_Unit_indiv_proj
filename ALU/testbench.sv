@@ -196,7 +196,43 @@ module testbench;
 		#1
         test_clk = 1;
         #1 
-		/* expected output: 0101 -> 0001 */		
+		/* expected output: 0101 */
+		
+		/* A = 2, B = 3 */
+		test_clk = 0;
+		test_arg_A = 4'b0010;
+		test_arg_B = 4'b0101;
+		#1
+        test_clk = 1;
+        #1 
+		/* expected output: 0 */	
+		
+		/* A = 2, B = 3 */
+		test_clk = 0;
+		test_arg_A = 4'b0001;
+		test_arg_B = 4'b0001;
+		#1
+        test_clk = 1;
+        #1 
+		/* expected output: 0010 */
+		
+		/* A = 2, B = 3 */
+		test_clk = 0;
+		test_arg_A = 4'b0110;
+		test_arg_B = 4'b0001;
+		#1
+        test_clk = 1;
+        #1 
+		/* expected output: 0110 */
+		
+		/* A = 2, B = 3 */
+		test_clk = 0;
+		test_arg_A = 4'b0111;
+		test_arg_B = 4'b0000;
+		#1
+        test_clk = 1;
+        #1 
+		/* expected output: 0110 */
 		
 		/*---------FOURTH OPERATION TEST---------*/
 		/*  */
