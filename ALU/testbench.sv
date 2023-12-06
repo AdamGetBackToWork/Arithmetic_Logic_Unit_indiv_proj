@@ -88,23 +88,50 @@ module testbench;
         #1
         /* expected output: 0011 */
         
-		/* A = 4, B = 5 */
+		/* A = 4, B =  3*/
 		test_clk = 0;
 		test_arg_A = 4'b0100;
-		test_arg_B = 4'b0110;
+		test_arg_B = 4'b0011;
 		#1
         test_clk = 1;
         #1   
-        /* expected output: 0 */
+        /* expected output: 1101 */
         
-        /* A = -4, B = 2 */
+        /* A = -4, B = -2 */
 		test_clk = 0;
 		test_arg_A = 4'b1100;
+		test_arg_B = 4'b1110;
+		#1
+        test_clk = 1;
+        #1   
+        /* expected output: 0000 */
+        
+        /* A = 2, B =  3*/
+		test_clk = 0;
+		test_arg_A = 4'b0010;
+		test_arg_B = 4'b0011;
+		#1
+        test_clk = 1;
+        #1   
+        /* expected output: 1101 */
+        
+        /* A = 2, B =  -2*/
+		test_clk = 0;
+		test_arg_A = 4'b0010;
 		test_arg_B = 4'b0010;
 		#1
         test_clk = 1;
         #1   
-        /* expected output: 0 */
+        /* expected output: 1101 */
+            		
+        /* A = 3, B =  3*/
+		test_clk = 0;
+		test_arg_A = 4'b0011;
+		test_arg_B = 4'b0011;
+		#1
+        test_clk = 1;
+        #1   
+        /* expected output: 1101 */
             		
 		/*---------SECOND OPERATION TEST---------*/
 		
@@ -161,6 +188,15 @@ module testbench;
 		/*---------THIRD OPERATION TEST---------*/
 		
 		test_op = 2'b10;
+		
+        /* A = 2, B = 3 */
+		test_clk = 0;
+		test_arg_A = 4'b0010;
+		test_arg_B = 4'b0011;
+		#1
+        test_clk = 1;
+        #1 
+		/* expected output: 0101 -> 0001 */		
 		
 		/*---------FOURTH OPERATION TEST---------*/
 		/*  */

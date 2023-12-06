@@ -27,6 +27,10 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
 	logic signed sign_A2;
 	logic signed sign_B2;
 	
+	logic signed [3:0] temp_B_signed;
+    logic signed [3:0] result_signed;
+    logic [4:0] result_abs;
+	
 	
 	/* Positive edge changes */
 	
@@ -43,13 +47,34 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
     			/*------------FIRST OPERATION------------*/
     			
     			`ALU_SUB:  begin // A-2*B
-    					
+    					/*
     					sign_A = $signed(i_arg_A);
     					sign_B = $signed(i_arg_B);
     					
-    					temp_B = (i_arg_B << 1);
+    					temp_B = (sign_B << 1);
     					
-    					o_result = i_arg_A - temp_B;
+    					o_result = i_arg_A - temp_B; */
+    					
+     					temp_B_signed = $signed(i_arg_B) << 1; // Calculate 2*B with signed extension
+
+   						 result_signed = $signed(i_arg_A) - temp_B_signed; // Subtract A - 2*B
+
+    					// Check for overflow in the signed subtraction
+    					if (result_signed >= 8 || result_signed < -7) begin
+      						 // Overflow occurred, handle accordingly (setting flags, clamping, etc.)
+        					 // For example:
+       						 result_signed = -8; // Clamping to the minimum negative value
+       						 o_status <= 4'b1000; // Set overflow flag
+    					end
+
+   						// Convert result back to unsigned for output
+   						if (result_signed < 0) begin
+        					result_abs = -result_signed; // Get absolute value
+        						o_result <= {1'b1, result_abs[3:1]}; // Set sign bit and output the absolute value
+   						 end else begin
+        					o_result <= i_arg_A - (i_arg_B << 1); // Unsigned subtraction
+    					end
+    			           end
     					
     					/*
     					if (i_arg_A >= temp_B) begin       										
@@ -70,7 +95,7 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
  							
  						end   					
     					*/
-    				   end
+    				  
     						
             		
             		
@@ -145,7 +170,7 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
         				sign_B2 = $signed(i_arg_B);
         				
         				o_result = sign_A2 + sign_B2;
-        				o_result[i_arg_B] = 0;
+        				o_result = o_result & ~(1 << i_arg_B);
         				
         				
         			
