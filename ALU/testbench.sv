@@ -75,7 +75,7 @@ module testbench;
 		// Test Case 7: A = 2, B = 3
 		test_clk = 0; test_arg_A = 4'b0010; test_arg_B = 4'b0011;
 		#1 test_clk = 1; #1
-		// Expected output: 1101
+		// Expected output: 1100
 
 		// Test Case 8: A = 2, B = -2
 		test_clk = 0; test_arg_A = 4'b0010; test_arg_B = 4'b0010;

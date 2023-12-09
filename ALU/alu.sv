@@ -31,6 +31,7 @@ module sync_arith_unit_4 (i_op,
 	logic [M-1:0] temp_B;
 	logic [M-1:0] comp_A, comp_B;
 	logic [M-1:0] sum;
+	logic [M:0] overflow_check;
 	
 	/* temporary result and status to keep a track of em in combination part of module */
 	logic [3:0] temp_status; 
@@ -50,6 +51,7 @@ module sync_arith_unit_4 (i_op,
     		temp_B = 4'b0;
     		comp_A = 4'b0; comp_B = 4'b0;
     		sum = 4'b0;
+    		overflow_check = 5'b0;
     		
     		/* starting the switch case for all operation options */
     		
@@ -66,18 +68,21 @@ module sync_arith_unit_4 (i_op,
     					
     					/* addressing the problem with overflow and goind out of bounds */
     					
+    					overflow_check = i_arg_A - temp_B;
     					
-    					if ((i_arg_A - temp_B) > 4'b0111) 
-    					begin
-    						
-    						temp_status = 4'b1001;
-    						temp_result = 4'bxx;
-    					end 
-    					else if ((i_arg_A - temp_B) < 4'b1000) 
+    					if ((overflow_check[M] == 0) && (overflow_check[M-1] == 1)) 
     					begin
     					
     						temp_status = 4'b1001;
     						temp_result = 4'bx;
+    						
+    					end 
+    					else if ((overflow_check[M] == 1) && (overflow_check[M-1] == 0) ) 
+    					begin
+    					
+    						temp_status = 4'b1001;
+    						temp_result = 4'bx;
+    						
     					end else 
     					begin 
     					
