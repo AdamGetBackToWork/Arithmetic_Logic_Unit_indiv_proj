@@ -164,23 +164,29 @@ module sync_arith_unit_4 (i_op,
 
         			 	/* Adding up both input vectors, A and B */
         			 	
+        				overflow_check = i_arg_A + i_arg_B;
         				sum = i_arg_A + i_arg_B;
         				
-        				if((sum > 7) || (sum < -8)) 
-        				begin
-        					
-        					temp_status = 4'b1001;
+        				if ((overflow_check[M] == 0) && (overflow_check[M-1] == 1)) 
+    					begin
+    					
+    						temp_status = 4'b1001;
     						temp_result = 4'bx;
-        					
-        				end else 
+    						
+    					end else if ((overflow_check[M] == 1) && (overflow_check[M-1] == 0) ) 
+    					begin
+    					
+    						temp_status = 4'b1001;
+    						temp_result = 4'bx;
+    						
+    					end else
         				begin
         				
         				/*  
         					Changing the corresponded to B value bit in sum to 0 
         					keep in mind the bits are 0 indexed, so if B = 0001 then 
         					in "sum" the bit changed will be the 2^1 one.
-        				*/
-        				 
+        				*/ 
         				sum[i_arg_B] = 0;
         				
         				/* Assigning the sum to the result output */
@@ -225,19 +231,24 @@ module sync_arith_unit_4 (i_op,
 				
 			/* After exiting switch case, assigning bits of the temp_status */
 				
-			/* If there is an even number of ones in result, switch bit no.2 to 1 */
-				if(~(^temp_result == 1'b1)) 
-				begin
-					temp_status[2] = 1'b1;
-				end
+				if (~(temp_status == 4'b1001))
+				begin 
+					
+				/* If there is an even number of ones in result, switch bit no.2 to 1 */
+					
+					if(~(^temp_result == 1'b1)) 
+					begin
+						temp_status[2] = 1'b1;
+					end
 				
+				/* If result is made of ones entirely, switch bit no.1 to 1 */
 				
-			/* If result is made of ones entirely, switch bit no.1 to 1 */
-				if(temp_result == 4'b1111) 
-				begin
-					temp_status[1] = 1'b1; 
-				end
-				
+					if(temp_result == 4'b1111) 
+					begin
+						temp_status[1] = 1'b1; 
+					end
+					
+				end	
 				
 			/* reseting the entire module */
 				if(i_reset == 1'b0) 
