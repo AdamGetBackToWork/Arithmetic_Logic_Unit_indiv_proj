@@ -41,6 +41,7 @@ module sync_arith_unit_4 (i_op,
     	
     		/* Zeroing the status output */
     		
+    		
     		/* assigning zero-values to temporary result and status*/
     		temp_status = 4'b0000; 
     		temp_result = 4'b0;
