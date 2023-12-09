@@ -3,106 +3,144 @@
 `define ALU_SUM 2'b10
 `define ALU_CONV 2'b11
 
-module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_status);
+module sync_arith_unit_4 (i_op, 
+						i_arg_A, 
+						i_arg_B, 
+						i_clk, 
+						i_reset, 
+						o_result, 
+						o_status);
 
-	parameter N = 2;
-	parameter M = 4;
+	/* parameters used to keep the code easy to modify */
+	parameter N = 2, M = 4;
 
+	/* logical inputs, specified in documentation */
 	input logic [N-1:0] i_op;
-	input logic [M-1:0] i_arg_A;
-	input logic [M-1:0] i_arg_B;
+	input logic [M-1:0] i_arg_A, i_arg_B;
 	input logic i_clk;
 	input logic i_reset;
 
+	/* logical outputs, specified in documentation */
 	output logic [M-1:0] o_result;
 	output logic [3:0] o_status;
 	
+	/* logical vectors, to keep temporary values inside of them
+	   this way, im not modyfing the output over and over again, 
+	   but instead perform operation on temporary vars
+	*/
 	logic [M-1:0] temp_B;
-	logic [M-1:0] comp_A;
-	logic [M-1:0] comp_B;
-	logic carry;
+	logic [M-1:0] comp_A, comp_B;
 	logic [M-1:0] sum;
-	logic signed sign_A2;
-	logic signed sign_B2;
 	
+	/* temporary result and status to keep a track of em in combination part of module */
+	logic [3:0] temp_status; 
+	logic [M-1:0] temp_result;
 	
-	
-	/* Positive edge changes */
-	
-	always @(posedge i_clk) begin
+	/* Combination part of the module */
+	always_comb begin
     	
     		/* Zeroing the status output */
     		
-    		o_status = 4'b0000; 
+    		/* assigning zero-values to temporary result and status*/
+    		temp_status = 4'b0000; 
+    		temp_result = 4'b0;
+    		
+    		/* assigning zero-values to temporary vars*/
+    		temp_B = 4'b0;
+    		comp_A = 4'b0; comp_B = 4'b0;
+    		sum = 4'b0;
     		
     		/* starting the switch case for all operation options */
     		
     		case (i_op)
     		
     		
-    			
     			/*------------FIRST OPERATION------------*/
     			
+    			/* Operation of subtracting the double of B from A */
+    			
     			`ALU_SUB:  begin // A-2*B
-    					
+    						
     					temp_B = (i_arg_B << 1);
     					
-    					o_result = i_arg_A - temp_B;
+    					/* addressing the problem with overflow and goind out of bounds */
+    					
+    					
+    					if ((i_arg_A - temp_B) > 4'b0111) 
+    					begin
+    						
+    						temp_status = 4'b1001;
+    						temp_result = 4'bxx;
+    					end 
+    					else if ((i_arg_A - temp_B) < 4'b1000) 
+    					begin
+    					
+    						temp_status = 4'b1001;
+    						temp_result = 4'bx;
+    					end else 
+    					begin 
+    					
+    						temp_result = i_arg_A - temp_B;
     					
     					end
+            		end
+      
             		
-            			
             			
             	/*------------SECOND OPERATION------------*/
             			
             	/* Operation of comparing input A with input B */
             	
-            		`ALU_COMP: begin
+            	`ALU_COMP: begin // A < B
                     	 
                     	/* if A is smaller than B then the output is NOT 0 */ 
                     	
-                		if ((i_arg_A[M-1] == 1) && (i_arg_B[M-1] == 0)) begin
+                		if ((i_arg_A[M-1] == 1) && (i_arg_B[M-1] == 0)) 
+                		begin
                 		
-                    			o_result = 2'b01; 
+                    			temp_result = 2'b01; 
                     			
-                		end 
+                		end else 
                 		
                 		/* if A is bigger than B then the output is 0 */ 
                 		
-                		else if (((i_arg_A[M-1] == 0) && (i_arg_B[M-1] == 1)) || (i_arg_A == i_arg_B)) begin
+                		if (((i_arg_A[M-1] == 0) && (i_arg_B[M-1] == 1)) || (i_arg_A == i_arg_B)) 
+                		begin
                 		
-                    			o_result = 0; // Output 0 if A >= B
+                    			temp_result = 0; // Output 0 if A >= B
                     			
-                		end
-                		else if ((i_arg_A[M-1] == 0) && (i_arg_B[M-1] == 0)) begin
+                		end else if ((i_arg_A[M-1] == 0) && (i_arg_B[M-1] == 0)) 
+                		begin
                 		
-                			if (i_arg_A < i_arg_B) begin
+                			if (i_arg_A < i_arg_B) 
+                			begin
                 			
-                				o_result = 2'b01; 
+                				temp_result = 2'b01; 
+                				
+                			end else 
+                			begin 
+                			
+                				temp_result = 0;
                 				
                 			end
-                			else begin 
                 			
-                				o_result = 0;
-                				
-                			end
-                			
-                		end
-                		else if ((i_arg_A[M-1] == 1) && (i_arg_B[M-1] == 1)) begin
+                		end else if ((i_arg_A[M-1] == 1) && (i_arg_B[M-1] == 1)) 
+                		begin
                 			comp_A = i_arg_A;
                 			comp_B = i_arg_B;
                 			
                 			comp_A[M-1] = 0;
                 			comp_B[M-1] = 0;
                 			
-                			if (comp_A > comp_B) begin
+                			if (comp_A > comp_B) 
+                			begin
                 			
-                				o_result = 1;
+                				temp_result = 1;
                 			
-                			end 
-                			else begin
+                			end else 
+                			begin
                 			
-                				o_result = 0;
+                				temp_result = 0;
                 			
                 			end
                 		
@@ -114,15 +152,22 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
             	
             	/*------------THIRD OPERATION------------*/ 
             	
-            	/* (A+B)[B] = 0 */
+            	/* Operation of changing the B-index bit of the sum ofg  */
    
-        			
-        			`ALU_SUM : begin
+        		`ALU_SUM : begin // (A+B)[B] = 0
 
         			 	/* Adding up both input vectors, A and B */
         			 	
         				sum = i_arg_A + i_arg_B;
         				
+        				if((sum > 7) || (sum < -8)) 
+        				begin
+        					
+        					temp_status = 4'b1001;
+    						temp_result = 4'bx;
+        					
+        				end else 
+        				begin
         				
         				/*  
         					Changing the corresponded to B value bit in sum to 0 
@@ -134,8 +179,8 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
         				
         				/* Assigning the sum to the result output */
         				
-        				o_result = sum;
-        				
+        				temp_result = sum;
+        				end
                     end
                     	
                     	
@@ -143,19 +188,17 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
                     	
                	/*------------FOURTH OPERATION------------*/		
                		
-                	/*  
-                		Fourth operation, conversion from Two's compliment into sign 
-                		magnitude (U2 into ZM)
-                	*/
+                /*  Fourth operation, conversion from Two's compliment into sign magnitude (U2 into ZM)*/
                     			
                     			
-               		`ALU_CONV: begin
+               	`ALU_CONV: begin // U2(A) => ZM(A)
     				
     					/* if the number is negative, we invert all but first bits, then add 1 */
     				
-    					if(i_arg_A[M-1] == 1) begin
+    					if(i_arg_A[M-1] == 1) 
+    					begin
     				
-        					o_result = {1'b1, ~(i_arg_A[M-2:0]) + 1'b1};
+        					temp_result = {1'b1, ~(i_arg_A[M-2:0]) + 1'b1};
         				
     					end 
     				
@@ -163,17 +206,47 @@ module sync_arith_unit_4 (i_op, i_arg_A, i_arg_B, i_clk, i_reset, o_result, o_st
     				
     					else begin
     				
-        					o_result = i_arg_A;
+        					temp_result = i_arg_A;
         				
     					end
     					
 					end
     			
     			
-    			
-                    //default:
+                    //default - not used
                     
 			endcase
+				
+			/* After exiting switch case, assigning bits of the temp_status */
+				
+			/* If there is an even number of ones in result, switch bit no.2 to 1 */
+				if(~(^temp_result == 1'b1)) 
+				begin
+					temp_status[2] = 1'b1;
+				end
+				
+				
+			/* If result is made of ones entirely, switch bit no.1 to 1 */
+				if(temp_result == 4'b1111) 
+				begin
+					temp_status[1] = 1'b1; 
+				end
+				
+				
+			/* reseting the entire module */
+				if(i_reset == 1'b0) 
+				begin
+				    temp_status = 4'b0000;
+    				temp_result = 4'b0000;
+				end
+
     	end
+		
+		/* assigning the temporary result and status to their outputs */
+    	always_ff @(posedge i_clk) begin
+    		o_result <= temp_result;
+    		o_status <= temp_status;
+   		end
+
 endmodule
 
