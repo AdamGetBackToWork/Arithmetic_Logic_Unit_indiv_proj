@@ -65,64 +65,35 @@ module sync_arith_unit_4 (i_op,
     			/* Operation of subtracting the double of B from A */
     			
     			`ALU_SUB:  begin // A-2*B
-    					/*	
+						
+						
+						/* multiplying input B by 2 */
+												
     					temp_B = (i_arg_B << 1);
     					
-    					s_B = $signed(temp_B);
-    					s_A = $signed(i_arg_A);
     					
-    					if ((s_A - s_B) > ((2**(M-1)) - 1)) 
-    					begin
-        					temp_status = 4'b1001;
-    						temp_result = 4'bx;
-        				end 
-        				else if ((s_A - s_B) < ((2**(M-1)) - 1)) 
-        				begin
-        					temp_status = 4'b1001;
-    						temp_result = 4'bx;
-        				end else 
-        				begin
-        					temp_result = s_A - s_B;
-        				end
-    					*/
-    					/* addressing the problem with overflow and goind out of bounds */
-    					/*
-    					overflow_check = i_arg_A - temp_B;
-    					
-    					if ((overflow_check[J-1] == 0) && (overflow_check[J-2] == 1)) 
-    					begin
-    					
-    						temp_status = 4'b1001;
-    						temp_result = 4'bx;
-    						
-    					end 
-    					else if ((overflow_check[J-1] == 1) && (overflow_check[J-2] == 0))  
-    					begin
-    					
-    						temp_status = 4'b1001;
-    						temp_result = 4'bx;
-    						
-    					end else 
-    					begin 
-    					
-    						temp_result = i_arg_A - temp_B;
-    					
-    					end
-    					*/
-    					temp_B = (i_arg_B << 1);
-    					
+    					/* changing the inputs to signed so its easier to perform operations on them */
             			s_A = $signed(i_arg_A);
         			 	s_B = $signed(temp_B);
         				
-  
-        				if ((s_A - s_B) > ((2**(M-1)) - 1)) begin
+  						/* checking for overflow and going out of bounds */
+        				if ((s_A - s_B) > ((2**(M-1)) - 1)) 
+        				begin
+        				
         					temp_status = 4'b1001;
     						temp_result = 4'bx;
+    						
         				end 
-        				else if ((s_A - s_B) < -(2**(M-1))) begin
+        				else if ((s_A - s_B) < -(2**(M-1))) 
+        				begin
+        				
         					temp_status = 4'b1001;
     						temp_result = 4'bx;
+    						
         				end else begin
+        				
+        				/* if the overflow hasnt been detected, simply subtract the numbers and 
+        				   assign the value of subtraction to temporary result */
         				
         				sum = s_A - s_B;
         				temp_result = sum;
@@ -202,38 +173,14 @@ module sync_arith_unit_4 (i_op,
    
         		`ALU_SUM : begin // (A+B)[B] = 0
 
-        			 	/* Adding up both input vectors, A and B */
         			 	
+        			 	/* changing the inputs to signed so its easier to perform operations on them */
         			 	s_A = $signed(i_arg_A);
         			 	s_B = $signed(i_arg_B);
+        			 	 
         			 	
-        				//sum = i_arg_A + i_arg_B;
-        				//overflow_check = sum;
-        				
-        				
-        				
-        				/*
-        				if ((overflow_check[J-1] == 0) && ((overflow_check[J-2] == 1)))
-    					begin
-    					
-    						temp_status = 4'b1001;
-    						temp_result = 4'bx;
-    						
-    						
-    					end else if ((overflow_check[J-1] == 1) && ((overflow_check[J-2] == 0)))
-    					begin
-    					
-    						temp_status = 4'b1001;
-    						temp_result = 4'bx;
-    						
-    					end else
-        				begin
-        				*/
-        				/*  
-        					Changing the corresponded to B value bit in sum to 0 
-        					keep in mind the bits are 0 indexed, so if B = 0001 then 
-        					in "sum" the bit changed will be the 2^1 one.
-        				*/ 
+        			 	/* checking for overflow and going out of bounds */
+        			 	
         				if ((s_A + s_B) > ((2**(M-1)) - 1)) begin
         					temp_status = 4'b1001;
     						temp_result = 4'bx;
@@ -243,11 +190,18 @@ module sync_arith_unit_4 (i_op,
     						temp_result = 4'bx;
         				end else begin
         				
+        				/* Adding up both input vectors, A and B */
+        				
         				sum = s_A + s_B;
+        				  
+        				/*	Changing the corresponded to B value bit in sum to 0 
+        					keep in mind the bits are 0 indexed, so if B = 0001 then 
+        					in "sum" the bit changed will be the 2^1 one. */ 
+
         				sum = (sum & ~(1 << s_B));
 
         				
-        				/* Assigning the sum to the result output */
+        				/* Assigning the sum to the temporary result output */
         				
         				temp_result = sum;
         				end

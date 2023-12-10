@@ -1,6 +1,7 @@
-`timescale 1ps/1ps
 `include "./alu.sv"
+`include "./alu_synthesis.sv"
 
+`timescale 1ps/1ps
 
 module testbench;
 
@@ -17,8 +18,8 @@ module testbench;
     wire [test_M-1:0] simulation_test_result;
     wire [3:0] simulation_test_status;
 
-    //wire [test_M-1:0] synthesis_test_result;
-    //wire [3:0] synthesis_test_status;
+    wire [test_M-1:0] synthesis_test_result;
+    wire [3:0] synthesis_test_status;
     
     sync_arith_unit_4 #(.N(test_N), .M(test_M))
     alu_model_simulation
@@ -29,6 +30,16 @@ module testbench;
     				     .i_reset(test_reset),
     				     .o_result(simulation_test_result), 
     			   	     .o_status(simulation_test_status));
+	
+	sync_arith_unit_4_synthesis
+    alu_model_synthesis 			
+    					(.i_arg_A(test_arg_A), 
+    					 .i_arg_B(test_arg_B), 
+    					 .i_op(test_op), 
+    					 .i_clk(test_clk), 
+    					 .i_reset(test_reset), 
+    					 .o_result(synthesis_test_result), 
+    					 .o_status(synthesis_test_status));
 	
 	initial begin
 		
