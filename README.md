@@ -28,3 +28,19 @@ Here's a concise description of the operations performed by the Arithmetic Logic
 - EVEN_1 bit: Indicates when the number of ones in the result is even.
 - ONES bit: Indicates when all bits in the result are set to 1.
 - OVERFLOW bit: Indicates an overflow condition occurred.
+
+## File Structure
+
+- ArithmeticLogicUnit
+	- module
+		- alu.sv
+		- alu_complied
+	- tests
+		- testbench.sv
+		- test_compiled
+	- synthesis
+		- alu_synthesis.sv
+	- signals_output
+		- signals.vcd
+- Documentation
+	- documentation.pdf
