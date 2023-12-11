@@ -219,8 +219,14 @@ module sync_arith_unit_4 (i_op,
                	`ALU_CONV: begin // U2(A) => ZM(A)
     				
     					/* if the number is negative, we invert all but first bits, then add 1 */
-    				
-    					if(i_arg_A[M-1] == 1) 
+    					
+    					if (i_arg_A == 4'b1000) begin
+    					
+    						temp_status = 4'b1001;
+    						temp_result = {1'b1, ~(i_arg_A[M-2:0]) + 1'b1};
+    					
+    					end
+    					else if(i_arg_A[M-1] == 1) 
     					begin
     				
         					temp_result = {1'b1, ~(i_arg_A[M-2:0]) + 1'b1};

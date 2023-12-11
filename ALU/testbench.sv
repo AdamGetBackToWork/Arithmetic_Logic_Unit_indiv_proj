@@ -213,7 +213,13 @@ module testbench;
 		test_clk = 0; test_arg_A = 4'b1001;
         #1 test_clk = 1; #1
         /* expected output: 1111 */
-		/* expected status: 0S0 */
+		/* expected status: 0110 */
+		
+		// Test Case 3: A = -8
+		test_clk = 0; test_arg_A = 4'b1000;
+        #1 test_clk = 1; #1
+        /* expected output: 1111 */
+		/* expected status: 0110 */		
 		
 		$finish;
 	
