@@ -1,8 +1,8 @@
 ## Computer and digital systems (class)
 
-This is a repo for my University class. Its a project of a simple ALU working in Two's compliment binary code. It can perform several operations on input vectors which are easily modified in terms of size. The documentation is written in polish only, as it was required for the class, yet still its computer-related class, so like half of it is in english anyway...
+This project was developed under Computer Systems class at Warsaw University of Technology. Its a project of a simple ALU working in Two's compliment binary code. It can perform several operations on input vectors which are easily modified in terms of size. The documentation is written in polish only, as it was required for the class, yet still its computer-related class, so like half of it is in english anyway...
 
-Enjoy checking out!
+Enjoy checking it out!
 
 ## Operations
 
